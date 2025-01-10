@@ -1,0 +1,126 @@
+{% extends 'tracker/dashboard.html' %}
+
+{% load static %} 
+
+{% block title %}Add User{% endblock %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/UserSytle.css' %}">
+    <style>
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #fff;
+            height: 500px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+        }
+
+        .table th, .table td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background-color: #2C3E50;
+            color: white;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h2 style="text-align: center;">Add User</h2>
+    <table>
+        <form method="post">
+            {% csrf_token %}
+            <tr>
+                <td><label>Company:</label></td>
+                <td>
+                    <select name="company" required>
+                        {% for company in companies %}
+                            <option value="{{ company.id }}">{{ company.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td><label>Role:</label></td>
+                <td>
+                    <select name="role" required>
+                        {% for role in roles %}
+                            <option value="{{ role.0 }}">{{ role.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Password:</label></td>
+                <td><input type="password" name="password" placeholder="Password" required></td>
+                <td><label>User Name:</label></td>
+                <td><input type="text" name="username" placeholder="Username" required></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <button type="submit">Add User</button>
+                </td>
+            </tr>
+        </form>
+    </table>
+    {% if messages %}
+        {% for message in messages %}   
+            <p style="
+                {% if message.tags == 'error' %}
+                    color: red;
+                {% elif message.tags == 'success' %}
+                    color: green;
+                {% else %}
+                    color: blue;
+                {% endif %}
+                text-align: center;">
+                {{ message }}<a href="{% url 'login' %}">Login</a>
+            </p>
+        {% endfor %}
+    {% endif %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User Id</th>
+                <th>User Name</th>
+                <th>Email</th>
+                <th>Company</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.companyuser__company__name }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="empty-message">No Users Added yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if form.errors %}
+        <div class="error">
+            <p>{{ form.errors }}</p>
+        </div>
+    {% endif %}
+{% endblock %}

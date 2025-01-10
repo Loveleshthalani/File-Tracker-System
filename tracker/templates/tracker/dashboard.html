@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_styles %}
+    
+    {% endblock %}
+</head>
+<body>
+    <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="logout-button">Logout</button>
+    </form>
+    <div class="sidebar">
+        <h2>Menu</h2>
+        {% if user.is_superuser %}
+            <a href="{% url 'create_company' %}">Create Company</a>
+        {% endif %}
+        {% if user.is_superuser or company_user and company_user.role == "Admin" %}
+            <a href="{% url 'add_user' %}">Users</a>
+        {% endif %}
+        <a href="{% url 'upload_file' %}">Upload File</a>
+        <a href="{% url 'file_list' %}">File List</a>
+    </div>
+
+<div class="content">
+    {% block content %}
+    <h1>Dashboard</h1>
+    <p>Welcome to the dashboard. Please use the menu on the left to navigate.</p>
+    {% endblock %}
+</div>
+
+</body>
+</html>
